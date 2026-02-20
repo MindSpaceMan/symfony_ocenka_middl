@@ -8,6 +8,8 @@ composer install
 через смену данных в .env файле
 symfony d:d:c
 symfony d:m:m
+запустить 1 раз:
+php bin/console doctrine:fixtures:load --append
 symfony serve
 ``` 
 
