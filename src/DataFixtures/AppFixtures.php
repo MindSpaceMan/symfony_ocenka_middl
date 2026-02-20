@@ -20,7 +20,7 @@ class AppFixtures extends Fixture
         ];
 
         foreach ($items as [$name, $price]) {
-            $service = new Service()
+            $service = (new Service())
                 ->setName($name)
                 ->setPrice($price);
 

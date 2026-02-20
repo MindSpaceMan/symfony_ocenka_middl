@@ -11,6 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class RegistrationControllerTest extends WebTestCase
 {
+
+    // symfony generated (experimental feature//
     private KernelBrowser $client;
     private UserRepository $userRepository;
 
@@ -34,7 +36,6 @@ class RegistrationControllerTest extends WebTestCase
 
         $em->flush();
     }
-    // symfony generated (experimental feature
 
     public function testRegister(): void
     {
