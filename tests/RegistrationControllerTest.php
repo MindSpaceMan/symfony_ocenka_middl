@@ -4,6 +4,8 @@ namespace App\Tests;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Exception\ORMException;
+use Doctrine\ORM\OptimisticLockException;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -12,11 +14,14 @@ class RegistrationControllerTest extends WebTestCase
     private KernelBrowser $client;
     private UserRepository $userRepository;
 
+    /**
+     * @throws OptimisticLockException
+     * @throws ORMException
+     */
     protected function setUp(): void
     {
         $this->client = static::createClient();
 
-        // Ensure we have a clean database
         $container = static::getContainer();
 
         /** @var EntityManager $em */
@@ -29,22 +34,21 @@ class RegistrationControllerTest extends WebTestCase
 
         $em->flush();
     }
+    // symfony generated (experimental feature
 
     public function testRegister(): void
     {
-        // Register a new user
         $this->client->request('GET', '/register');
         self::assertResponseIsSuccessful();
-        self::assertPageTitleContains('Register');
+        self::assertPageTitleContains('Регистрация');
 
-        $this->client->submitForm('Register', [
+        $this->client->submitForm('Зарегистрироваться', [
             'registration_form[email]' => 'me@example.com',
             'registration_form[plainPassword]' => 'password',
             'registration_form[agreeTerms]' => true,
         ]);
 
-        // Ensure the response redirects after submitting the form, the user exists, and is not verified
         self::assertCount(1, $this->userRepository->findAll());
-        self::assertResponseRedirects('/');
+        self::assertResponseRedirects('/register');
     }
 }
