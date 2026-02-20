@@ -1,5 +1,4 @@
 ### db: orm, mysql
-### linter - psalm
 ### tests - phpunit
 ### запуск:
 ```
