@@ -1,19 +1,72 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Регистрация{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+    <style>
+        .auth-wrap{min-height:70vh;display:flex;align-items:center;justify-content:center;padding:24px}
+        .auth-card{width:100%;max-width:460px;background:#fff;border:1px solid #e7e7e7;border-radius:14px;
+            box-shadow:0 10px 30px rgba(0,0,0,.06);padding:22px}
+        .auth-title{margin:0 0 14px;font-size:22px}
+        .auth-sub{margin:0 0 18px;color:#666;font-size:14px}
+        .auth-row{margin-bottom:12px}
+        .auth-label{display:block;margin:0 0 6px;font-size:13px;color:#333}
+        .auth-input{width:100%;padding:10px 12px;border:1px solid #d9d9d9;border-radius:10px;outline:none}
+        .auth-input:focus{border-color:#7aa7ff;box-shadow:0 0 0 4px rgba(122,167,255,.15)}
+        .auth-btn{width:100%;padding:10px 12px;border:0;border-radius:10px;background:#2f6feb;color:#fff;
+            font-weight:600;cursor:pointer}
+        .auth-btn:hover{filter:brightness(.97)}
+        .auth-foot{margin-top:14px;font-size:13px;color:#444}
+        .auth-foot a{color:#2f6feb;text-decoration:none}
+        .auth-foot a:hover{text-decoration:underline}
+        .auth-alert{padding:10px 12px;border-radius:10px;margin-bottom:12px}
+        .auth-alert--danger{background:#fff1f1;border:1px solid #ffd1d1;color:#8a1f1f}
+        .auth-check{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#333;margin-top:8px}
+        .auth-check input{margin-top:3px}
+        .auth-help{font-size:12px;color:#777;margin-top:6px}
+    </style>
 
-    {{ form_errors(registrationForm) }}
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <h1 class="auth-title">Регистрация</h1>
+            <p class="auth-sub">Создай аккаунт, чтобы оформить заказ услуги.</p>
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+            {% if form_errors(registrationForm) %}
+                <div class="auth-alert auth-alert--danger">
+                    {{ form_errors(registrationForm) }}
+                </div>
+            {% endif %}
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+            {{ form_start(registrationForm) }}
+
+            <div class="auth-row">
+                <label class="auth-label" for="{{ registrationForm.email.vars.id }}">Почта</label>
+                {{ form_widget(registrationForm.email, { attr: { class: 'auth-input' } }) }}
+                {{ form_errors(registrationForm.email) }}
+            </div>
+
+            <div class="auth-row">
+                <label class="auth-label" for="{{ registrationForm.plainPassword.vars.id }}">Пароль</label>
+                {{ form_widget(registrationForm.plainPassword, { attr: { class: 'auth-input' } }) }}
+                {{ form_errors(registrationForm.plainPassword) }}
+                <div class="auth-help">Минимум 6–8 символов, лучше с цифрами.</div>
+            </div>
+
+            <div class="auth-row">
+                <div class="auth-check">
+                    {{ form_widget(registrationForm.agreeTerms) }}
+                    <label for="{{ registrationForm.agreeTerms.vars.id }}">Согласен с правилами</label>
+                </div>
+                {{ form_errors(registrationForm.agreeTerms) }}
+            </div>
+
+            <button type="submit" class="auth-btn">Зарегистрироваться</button>
+
+            {{ form_end(registrationForm) }}
+
+            <div class="auth-foot">
+                Уже зарегистрированы? <a href="{{ path('app_login') }}">Войти</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
