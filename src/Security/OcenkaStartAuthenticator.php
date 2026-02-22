@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Domain\ValueObject\Email;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,7 +29,12 @@ class OcenkaStartAuthenticator extends AbstractLoginFormAuthenticator
 
     public function authenticate(Request $request): Passport
     {
-        $email = $request->getPayload()->getString('email');
+        $rawEmail = $request->getPayload()->getString('email');
+        try {
+            $email = (string)Email::fromString($rawEmail);
+        } catch (\InvalidArgumentException) {
+            $email = $rawEmail;
+        }
 
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
 

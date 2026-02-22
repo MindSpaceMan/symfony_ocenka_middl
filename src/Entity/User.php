@@ -49,8 +49,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setEmail(string $email): static
     {
-        // если запрос идет не с формы
-        $this->email = (string)Email::fromString($email);
+        $this->email = trim(mb_strtolower($email, 'UTF-8'));
         return $this;
     }
 

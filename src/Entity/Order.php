@@ -14,9 +14,11 @@ class Order
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\JoinColumn(nullable: false)]
     #[ORM\ManyToOne]
     private ?User $user = null;
 
+    #[ORM\JoinColumn(nullable: false)]
     #[ORM\ManyToOne]
     private ?Service $service = null;
 
@@ -75,8 +77,7 @@ class Order
 
     public function setEmail(string $email): static
     {
-        $this->email = $email;
-
+        $this->email = trim(mb_strtolower($email, 'UTF-8'));
         return $this;
     }
 

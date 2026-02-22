@@ -81,7 +81,7 @@ class OrderFlowTest extends WebTestCase
         $this->client->request('GET', '/');
 
         $this->client->submitForm('Подтвердить', [
-            'order[service]' => (string) $service->getId(),
+            'order[service]' => (string)$service->getId(),
             'order[email]' => 'buyer@test.dev',
         ]);
 
@@ -100,6 +100,30 @@ class OrderFlowTest extends WebTestCase
         $this->assertSame($service->getPrice(), $order->getPriceSnapshot());
     }
 
+    public function testOrderSubmitWithUnknownServiceDoesNotCreateOrder(): void
+    {
+        $user = $this->createUser('attacker@test.dev');
+        $this->client->loginUser($user, 'main');
+
+        $crawler = $this->client->request('GET', '/');
+        $this->assertResponseIsSuccessful();
+
+        $token = $crawler->filter('input[name="order[_token]"]')->attr('value');
+        $this->assertNotEmpty($token);
+
+        $this->client->request('POST', '/', [
+            'order' => [
+                'service' => '9999',
+                'email' => 'buyer@test.dev',
+                '_token' => $token,
+            ],
+        ]);
+
+        $status = $this->client->getResponse()->getStatusCode();
+        $this->assertContains($status, [200, 422]);
+
+        $this->assertSame(0, $this->em->getRepository(\App\Entity\Order::class)->count([]));
+    }
 
     private function resetDatabaseSchema(): void
     {
