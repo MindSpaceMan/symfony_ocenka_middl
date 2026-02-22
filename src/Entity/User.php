@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Domain\ValueObject\Email;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -48,8 +49,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setEmail(string $email): static
     {
-        $this->email = $email;
-
+        // если запрос идет не с формы
+        $this->email = (string)Email::fromString($email);
         return $this;
     }
 
@@ -60,7 +61,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -105,8 +106,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function __serialize(): array
     {
-        $data = (array) $this;
-        $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
+        $data = (array)$this;
+        $data["\0" . self::class . "\0password"] = hash('crc32c', $this->password);
 
         return $data;
     }

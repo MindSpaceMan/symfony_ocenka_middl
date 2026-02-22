@@ -29,6 +29,7 @@ class Order
     #[ORM\Column]
     private ?\DateTimeImmutable $updated_at = null;
 
+    // храним в копейках, если нужно.
     #[ORM\Column]
     private ?int $priceSnapshot = null;
 

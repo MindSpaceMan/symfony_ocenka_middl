@@ -21,7 +21,6 @@ class OrderController extends AbstractController
     public function index(Request $request, OrderCreator $orderCreator): Response
     {
         $order = new Order();
-
         $form = $this->createForm(OrderType::class, $order);
         $form->handleRequest($request);
 
@@ -32,17 +31,21 @@ class OrderController extends AbstractController
             $service = $order->getService();
             \assert($service instanceof Service);
 
-            $orderCreator->create(
+            $result = $orderCreator->create(
                 $user,
                 $service,
-                (string) $form->get('email')->getData()
+                (string)$form->get('email')->getData()
             );
 
-            $this->addFlash('success', 'Заказ сохранён ✅');
+            if ($result->isSuccess()) {
+                $this->addFlash('success', 'Заказ сохранён ✅');
+                return $this->redirectToRoute('app_order');
+            }
 
-            return $this->redirectToRoute('app_order');
+            foreach ($result->errors as $error) {
+                $this->addFlash('error', $error);
+            }
         }
-
         return $this->render('order/index.html.twig', [
             'form' => $form,
         ]);
